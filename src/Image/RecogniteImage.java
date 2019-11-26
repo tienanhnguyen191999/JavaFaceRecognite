@@ -158,8 +158,10 @@ public class RecogniteImage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -168,8 +170,8 @@ public class RecogniteImage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 710, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -264,7 +266,7 @@ public class RecogniteImage extends javax.swing.JFrame {
         
         // Face Detection phase
         RectVector detectedFaces = new RectVector();
-        cascade.detectMultiScale(imageColor, detectedFaces, 1.2, 3, 10, new Size(100, 100), new Size(1000, 1000));
+        cascade.detectMultiScale(imageColor, detectedFaces, 1.2, 3, 10, new Size(30, 30), new Size(3000, 3000));
         System.out.println(detectedFaces.size());
         for (int i = 0; i < detectedFaces.size(); i++) {
             dadosFace = detectedFaces.get(i);
@@ -280,7 +282,7 @@ public class RecogniteImage extends javax.swing.JFrame {
             
             if(predict == -1){
                 opencv_imgproc.rectangle(imageColor, dadosFace, new Scalar(0, 0, 255, 3), 3, 0, 0);
-                double scale = dadosFace.width() > 1000 ? (double)(dadosFace.width() * dadosFace.height()) / (1000 * 1000) * 30 : 3;
+                double scale = dadosFace.width() > 1000 ? (double)(dadosFace.width() * dadosFace.height()) / (1000 * 1000) * 30 : 2;
                 opencv_imgproc.putText(imageColor,"Unknown", new Point(dadosFace.x(),dadosFace.y()) , FONT_HERSHEY_PLAIN,scale, new Scalar(0,0,255,3),2,opencv_imgproc.LINE_AA,false);
             }else{
                 opencv_imgproc.rectangle(imageColor, dadosFace, new Scalar(0, 255, 0, 3), 3, 0, 0);
@@ -303,7 +305,7 @@ public class RecogniteImage extends javax.swing.JFrame {
         conn.executeSQL(SQL);
         while ( conn.rs.next()){
             String label = conn.rs.getString("name") + "id: " + conn.rs.getString("id");
-            double scale = dadosFace.width() > 1000 ? (double)(dadosFace.width() * dadosFace.height()) / (1000 * 1000) * 30 : 3 ;
+            double scale = dadosFace.width() > 1000 ? (double)(dadosFace.width() * dadosFace.height()) / (1000 * 1000) * 30 : 2 ;
             System.out.println("scale: " + scale);
             opencv_imgproc.putText(imageColor,label, new Point(dadosFace.x(),dadosFace.y()) , FONT_HERSHEY_PLAIN, scale , new Scalar(0,0,255,3),2,opencv_imgproc.LINE_AA,false);
             System.out.println("IN");

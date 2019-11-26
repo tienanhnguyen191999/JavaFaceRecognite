@@ -45,8 +45,6 @@ public class registerPerson extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txt_office = new javax.swing.JTextField();
         txt_lname = new javax.swing.JTextField();
         txt_fname = new javax.swing.JTextField();
         txt_dob = new javax.swing.JTextField();
@@ -72,16 +70,12 @@ public class registerPerson extends javax.swing.JFrame {
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, -1, -1));
 
         jLabel4.setText("Dob");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, -1, -1));
-
-        jLabel5.setText("Office");
-        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 100, -1, -1));
-        jPanel2.add(txt_office, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 200, -1));
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 100, -1, -1));
         jPanel2.add(txt_lname, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 50, 200, -1));
         jPanel2.add(txt_fname, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 230, -1));
-        jPanel2.add(txt_dob, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, 230, -1));
+        jPanel2.add(txt_dob, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 120, 230, -1));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 520, 180));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 520, 180));
 
         txt_id_user.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txt_id_user.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -110,6 +104,7 @@ public class registerPerson extends javax.swing.JFrame {
         String dob = txt_dob.getText();
         String  id = txt_id_user.getText();
         new Capture(Integer.parseInt(id),fname, lname, dob).setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -153,7 +148,6 @@ public class registerPerson extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextField4;
@@ -161,14 +155,12 @@ public class registerPerson extends javax.swing.JFrame {
     private javax.swing.JTextField txt_fname;
     private javax.swing.JLabel txt_id_user;
     private javax.swing.JTextField txt_lname;
-    private javax.swing.JTextField txt_office;
     // End of variables declaration//GEN-END:variables
 
     private void showIdUser() {
         try {
             conn.executeSQL("SELECT * FROM user order by id desc");
-            conn.rs.next();
-            int id = Integer.parseInt(conn.rs.getString("id")) + 1;
+            int id = conn.rs.next() ? Integer.parseInt(conn.rs.getString("id")) + 1 : 1;
             this.txt_id_user.setText(id+"");
         } catch (SQLException ex) {
             Logger.getLogger(registerPerson.class.getName()).log(Level.SEVERE, null, ex);

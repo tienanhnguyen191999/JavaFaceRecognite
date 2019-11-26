@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Array;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -86,10 +87,10 @@ public class Recognizer extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Recognizer");
         jLabel1.setOpaque(true);
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 462, 37));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1520, 37));
 
         label_photo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel1.add(label_photo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 440, 480));
+        jPanel1.add(label_photo, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 1470, 590));
 
         label_dob.setBackground(new java.awt.Color(0, 102, 204));
         label_dob.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -97,7 +98,7 @@ public class Recognizer extends javax.swing.JFrame {
         label_dob.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         label_dob.setText("Dob");
         label_dob.setOpaque(true);
-        jPanel1.add(label_dob, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 580, 440, 30));
+        jPanel1.add(label_dob, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 740, 440, 30));
 
         label_name.setBackground(new java.awt.Color(0, 102, 204));
         label_name.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -105,19 +106,17 @@ public class Recognizer extends javax.swing.JFrame {
         label_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         label_name.setText("FName-Lname");
         label_name.setOpaque(true);
-        jPanel1.add(label_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, 440, 30));
+        jPanel1.add(label_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 690, 440, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1529, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -193,7 +192,7 @@ public class Recognizer extends javax.swing.JFrame {
                                 recognizer.predict(face, rotulo, confidence);
                                 int predict = rotulo.get(0);
                                 String name = "";
-                                if(predict == -1){
+                                if(predict == -1  ){
                                     rectangle(cameraImage, dadosFace, new Scalar(0, 0, 255, 3), 3, 0, 0);
                                     label_name.setText("");
                                     label_photo.setText("");
@@ -202,7 +201,7 @@ public class Recognizer extends javax.swing.JFrame {
                                     System.out.println(confidence.get(0));
                                     idPerson = predict;
                                     try {
-                                        rec();
+                                        rec(confidence.get(0));
                                     } catch (Exception ex) {
                                         Logger.getLogger(Recognizer.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -215,7 +214,6 @@ public class Recognizer extends javax.swing.JFrame {
 
                             if (g.drawImage(buff, 0, 0, getWidth(), getHeight() - 90, 0, 0, buff.getWidth(), buff.getHeight(), null)) {
                                 if (runnable == false) {
-                                    System.out.println("Salve a Foto");
                                     this.wait();
                                 }
                             }
@@ -231,35 +229,20 @@ public class Recognizer extends javax.swing.JFrame {
                 }
             }
         }
-
+        
     }
     
-    private void rec()throws  Exception{
-        // Recognizer face in database
-//        SwingWorker worker = new SwingWorker() {
-//            @Override
-//            protected Object doInBackground() throws Exception {
-                String SQL = "select * from user where id = " + idPerson;
-                conn.executeSQL(SQL);
-                while ( conn.rs.next()){
-                    String label = conn.rs.getString("fname");
-                    opencv_imgproc.putText(cameraImage,label, new Point(dadosFace.x(),dadosFace.y()) , FONT_HERSHEY_PLAIN, 1.0 , new Scalar(0,0,255,3),2,opencv_imgproc.LINE_AA,false);
-                    System.out.println("IN");
-                    label_name.setText(conn.rs.getString("fname") + " - " + conn.rs.getString("lname"));
-                    label_dob.setText(conn.rs.getString("dob"));
-                    System.out.println("Person: " + conn.rs.getString("id"));
-                    
-//                    Array ident = conn.rs.getArray("fname");
-//                    String person[] = (String[]) ident.getArray();
-//                    System.out.println("ONCE RUN: \n\n\n");
-//                    for (int i = 0 ;i < person.length; i++){
-//                       // System.out.println(person[i]);
-//                    }
-                }
-//                return null;
-//            }
-//        };
-        //worker.execute();
+    private void rec(double confi)throws  Exception{
+        String SQL = "select * from user where id = " + idPerson;
+        conn.executeSQL(SQL);
+        while ( conn.rs.next()){
+            String label = conn.rs.getString("fname") + "   " + new DecimalFormat("##.##").format(confi / 70 * 100 ) + "%";
+            opencv_imgproc.putText(cameraImage,label, new Point(dadosFace.x(),dadosFace.y()) , FONT_HERSHEY_PLAIN, 1.5 , new Scalar(0,0,255,3),1,opencv_imgproc.LINE_AA,false);
+            System.out.println("IN");
+            label_name.setText(conn.rs.getString("fname") + " - " + conn.rs.getString("lname"));
+            label_dob.setText(conn.rs.getString("dob"));
+            System.out.println("Person: " + conn.rs.getString("id"));
+        }
     }
    
     

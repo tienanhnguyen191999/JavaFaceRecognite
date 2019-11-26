@@ -52,19 +52,19 @@ import org.opencv.imgcodecs.Imgcodecs;
  * @author TienAnh
  */
 public class TrainImageData extends javax.swing.JFrame {
- 
+
     // Java CV
     //VideoCapture webSource = null
     CascadeClassifier cascade = new CascadeClassifier("C:\\OpenCV_Source_code\\opencv\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
     BytePointer mem = new BytePointer();
     RectVector detectedFaces = new RectVector();
-    
+
     //Vars
     String root, fnamePerson, lnamePerson, dobPeron;
     int numSamples = 26, sample = 1, idPerson;
-    
+
     // Utils
-    Dao conn;          
+    Dao conn;
     private JFileChooser fileChooser;
 
     /**
@@ -72,7 +72,7 @@ public class TrainImageData extends javax.swing.JFrame {
      */
     public TrainImageData() throws SQLException {
         initComponents();
-        conn = new Dao(); 
+        conn = new Dao();
         idPerson = getIdPerson();
     }
 
@@ -149,28 +149,28 @@ public class TrainImageData extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(56, 56, 56)
                         .addComponent(btnTrain)
-                        .addGap(73, 73, 73)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(16, 16, 16))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(btnTrain)
                     .addComponent(jButton2))
-                .addGap(12, 12, 12)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -197,13 +197,14 @@ public class TrainImageData extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         fileChooser = new JFileChooser();
         fileChooser.setMultiSelectionEnabled(true);
-        fileChooser.showOpenDialog(null);    
+        fileChooser.showOpenDialog(null);
+        JOptionPane.showMessageDialog(null, "Đã thêm " + fileChooser.getSelectedFiles().length + " ảnh ");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTrainActionPerformed
-        File files[] = fileChooser.getSelectedFiles();   
+        File files[] = fileChooser.getSelectedFiles();
         try {
-            trainData(files,label_name.getText());
+            trainData(files, label_name.getText());
             generate();
             System.out.println("File Generated");
         } catch (SQLException ex) {
@@ -264,91 +265,83 @@ public class TrainImageData extends javax.swing.JFrame {
     private javax.swing.JTextField label_name;
     // End of variables declaration//GEN-END:variables
 
-    private javax.swing.JLabel label[] ;
-    
-    public void trainData(File[] files, String name) throws SQLException{
+    private javax.swing.JLabel label[];
+
+    public void trainData(File[] files, String name) throws SQLException {
         insertDatabase(name);
         sample = 1;
-        for (File file : files){
+        for (File file : files) {
             System.out.println(file.getName());
-        // Create new matrix of face
-        Mat imageColor = new Mat();
-        
-        // convert image to matrix
-        imageColor = opencv_imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_ANYCOLOR);
-            
-        // convert Color image => grayImage (For algo)
-        Mat imageGray = new Mat();
-        cvtColor(imageColor, imageGray, COLOR_BGRA2GRAY);
+            // Create new matrix of face
+            Mat imageColor = new Mat();
 
-        // Face Detection phase
-        RectVector detectedFaces = new RectVector();
-        cascade.detectMultiScale(imageColor, detectedFaces, 1.2, 3, 10, new Size(100, 100), new Size(1000, 1000));
-        
-        System.out.println(detectedFaces.size());
-        for (int i = 0; i < detectedFaces.size(); i++) {
-            Rect dadosFace = detectedFaces.get(i);
-            Mat face = new Mat(imageGray, dadosFace);
-            opencv_imgproc.resize(face, face, new Size(160, 160));
-            String cropped = "C:\\photos\\ReconiteWithImage\\person." + idPerson + "." + sample++ + ".jpg";
-            imwrite(cropped, face);
-        }
-        
-//        imencode(".bmp", imageColor, mem);
-//        Image im = ImageIO.read(new ByteArrayInputStream(mem.getStringBytes()));
-//        BufferedImage buff = (BufferedImage) im;
-//        
-//        if (g.drawImage(buff, 0, 0, getWidth(), getHeight() - 90, 0, 0, buff.getWidth(), buff.getHeight(), null)) {
-//            if (runnable == false) {
-//                System.out.println("Salve a Foto");
-//                this.wait();
-//            }
-//        }
+            // convert image to matrix
+            imageColor = opencv_imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_ANYCOLOR);
+
+            // convert Color image => grayImage (For algo)
+            Mat imageGray = new Mat();
+            cvtColor(imageColor, imageGray, COLOR_BGRA2GRAY);
+
+            // Face Detection phase
+            RectVector detectedFaces = new RectVector();
+            cascade.detectMultiScale(imageColor, detectedFaces, 1.2, 3, 10, new Size(30, 30), new Size(1000, 1000));
+
+            System.out.println(detectedFaces.size());
+            for (int i = 0; i < detectedFaces.size(); i++) {
+                Rect dadosFace = detectedFaces.get(i);
+                Mat face = new Mat(imageGray, dadosFace);
+                opencv_imgproc.resize(face, face, new Size(160, 160));
+                String cropped = "C:\\photos\\ReconiteWithImage\\person." + idPerson + "." + sample++ + ".jpg";
+                imwrite(cropped, face);
+            }
         }
     }
-    
-    private void generate() {        
+
+    private void generate() {
         // Read all Image File (*.jpg || *.png || *.jfif) 
         File directory = new File("C:\\photos\\ReconiteWithImage\\");
-        FilenameFilter filter = new FilenameFilter(){
+        FilenameFilter filter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return !name.endsWith(".yml") ;
+                return !name.endsWith(".yml");
             }
-            
+
         };
-        
+
         File file[] = directory.listFiles(filter); // only our filter
         MatVector photos = new MatVector(file.length);
-        Mat labels = new Mat(file.length, 1 , opencv_core.CV_32SC1);
+
+        Mat labels = new Mat(file.length, 1, opencv_core.CV_32SC1);
         IntBuffer labelBuffer = labels.createBuffer();
-        
+
         int counter = 0;
-        for (File image : file){
-            Mat photo = imread(image.getAbsolutePath(), COLOR_BGRA2GRAY );
+        for (File image : file) {
+            Mat photo = imread(image.getAbsolutePath(), COLOR_BGRA2GRAY);
+
             int idPerson = Integer.parseInt(image.getName().split("\\.")[1]);
-            opencv_imgproc.resize(photo,photo,new Size(160,160));
-            
-            photos.put(counter,photo);
+
+            opencv_imgproc.resize(photo, photo, new Size(160, 160));
+
+            photos.put(counter, photo);
             labelBuffer.put(counter, idPerson);
             counter++;
         }
-        FaceRecognizer lbph = LBPHFaceRecognizer.create(1,8,8,8,12);
+        FaceRecognizer lbph = LBPHFaceRecognizer.create(1, 8, 8, 8, 12);
         lbph.train(photos, labels);
         lbph.save("C:\\photos\\ReconiteWithImage\\classifierLBPH.yml");
-        
+
     }
 
     private void insertDatabase(String name) throws SQLException {
-        String SQL = "insert into identify(name) values (?)" ;
+        String SQL = "insert into identify(name) values (?)";
         PreparedStatement st = conn.conn.prepareStatement(SQL);
-        st.setString(1,name);
+        st.setString(1, name);
         st.executeUpdate();
     }
 
     private int getIdPerson() throws SQLException {
         String SQL = "Select * from identify order by id desc limit 1";
         conn.executeSQL(SQL);
-        return conn.rs.next()? conn.rs.getInt("id") + 1  : 1;
+        return conn.rs.next() ? conn.rs.getInt("id") + 1 : 1;
     }
 }

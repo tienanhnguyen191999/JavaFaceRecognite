@@ -101,14 +101,15 @@ public class Capture extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Captrue 25 SnapShots");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 420, 50));
+        jLabel1.setText("Capture 25 SnapShots");
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1540, 50));
 
         label_photo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jPanel2.add(label_photo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 400, 400));
+        jPanel2.add(label_photo, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 1500, 630));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 400, 90));
 
         counterLabel.setBackground(new java.awt.Color(0, 102, 102));
         counterLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
@@ -116,7 +117,7 @@ public class Capture extends javax.swing.JFrame {
         counterLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         counterLabel.setText("0");
         counterLabel.setOpaque(true);
-        jPanel3.add(counterLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 80, 40));
+        jPanel2.add(counterLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 690, 80, 40));
 
         saveButton.setBackground(new java.awt.Color(51, 153, 255));
         saveButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -126,19 +127,17 @@ public class Capture extends javax.swing.JFrame {
                 saveButtonActionPerformed(evt);
             }
         });
-        jPanel3.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 100, 40));
-
-        jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 400, 90));
+        jPanel2.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 740, 100, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1542, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
         );
 
         pack();
@@ -189,7 +188,7 @@ public class Capture extends javax.swing.JFrame {
                             // C++ nó cơ chế call by refercences
 
                             for (int i = 0; i < detectedFaces.size(); i++) {
-                                Rect dadosFace = detectedFaces.get(0);
+                                Rect dadosFace = detectedFaces.get(i);
                                 rectangle(imageColor, dadosFace, new Scalar(255, 255, 0, 2),3,0,0);
                                 // HÌnh chữ nhật
                                 Mat face = new Mat(imageGray, dadosFace);
