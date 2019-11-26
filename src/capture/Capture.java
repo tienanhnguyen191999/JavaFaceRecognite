@@ -120,7 +120,7 @@ public class Capture extends javax.swing.JFrame {
         jPanel2.add(counterLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 690, 80, 40));
 
         saveButton.setBackground(new java.awt.Color(51, 153, 255));
-        saveButton.setForeground(new java.awt.Color(255, 255, 255));
+        saveButton.setForeground(new java.awt.Color(51, 51, 51));
         saveButton.setText("Capture");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
